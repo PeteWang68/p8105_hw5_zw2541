@@ -11,3 +11,27 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 ```
 
+## Problem 1
+
+### Read and clean the data
+
+```{r}
+file_names = list.files(path = "./data")
+
+
+read_and_tidy = function(file_names){
+   a = read.csv(str_c("./data/", file_names)) %>% 
+     janitor::clean_names() %>% 
+     as.data.frame() %>% 
+     mutate(group = file_names) %>% 
+     select(group, everything())
+}
+
+study_data = map(file_names, read_and_tidy) %>% 
+  bind_rows() %>% 
+  gather(key = week, value = data, week_1:week_8) %>% 
+  mutate(group = str_replace(group, ".csv", "")) %>% 
+  separate(group, into = c("group", "ID"), sep = "_") %>% 
+  mutate(week = str_replace(week, "week_", ""))
+```
+
