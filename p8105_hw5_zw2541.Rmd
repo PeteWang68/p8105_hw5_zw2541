@@ -15,6 +15,8 @@ library(tidyverse)
 
 ### Read and clean the data
 
+Create a tidy dataframe containing data from all participants, including the subject ID, arm, and observations over time.
+
 ```{r}
 file_names = list.files(path = "./data_1")
 
@@ -37,8 +39,10 @@ study_data = map(file_names, read_and_tidy) %>%
 
 ### Spaghetti plot
 
+Make a spaghetti plot showing observations on each subject over time, and comment on differences between groups.
+
 ```{r}
-study_data %>% 
+study_data %>%
   ggplot(aes(x = as.numeric(week), y = data, color = id)) +
   geom_line() +
   facet_grid(~ group) +
@@ -49,4 +53,31 @@ study_data %>%
     caption = "Data from a longitudinal study") +
   theme(legend.position = "bottom")
 ```
+
+## Problem 2
+
+### Read and clean the data
+
+```{r}
+homicides_data = 
+  read.csv("./data_2/homicide-data.csv") %>% 
+  janitor::clean_names() 
+```
+
+### Describe the raw data
+
+Create a city_state variable (e.g. "Baltimore, MD") and then summarize within cities to obtain the total number of homicides and the number of unsolved homicides (those for which the disposition is "Closed without arrest" or "Open/No arrest").
+
+```{r}
+summarize_homicides = 
+  homicides_data %>% 
+  mutate(city_state = str_c(city, state, sep = ", ")) %>% 
+  select(-city, -state) %>% 
+  group_by(city_state) %>% 
+  summarize(n_homicides = n(),
+            n_unsolved_homicides = sum(disposition %in% c("Closed by arrest", "Open/No arrest")))
+
+summarize_homicides
+```
+
 
