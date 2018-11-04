@@ -75,9 +75,22 @@ summarize_homicides =
   select(-city, -state) %>% 
   group_by(city_state) %>% 
   summarize(n_homicides = n(),
-            n_unsolved_homicides = sum(disposition %in% c("Closed by arrest", "Open/No arrest")))
+            n_unsolved_homicides = sum(disposition %in% c("Closed without arrest", "Open/No arrest")))
 
 summarize_homicides
 ```
 
+### prop.test of Baltimore, MD
+
+```{r}
+baltimore =
+  summarize_homicides %>% 
+  filter(city_state == "Baltimore, MD") 
+
+  prop.test(baltimore$n_unsolved_homicides, baltimore$n_homicides) %>% 
+    broom::tidy() %>% 
+    select(estimate, conf.low, conf.high)
+```
+
+The estimated proportion is 0.646 and confidence intervals is (0.628, 0.663).
 
