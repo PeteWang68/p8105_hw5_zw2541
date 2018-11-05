@@ -22,7 +22,7 @@ file_names = list.files(path = "./data_1")
 
 
 read_and_tidy = function(file_names){
-   a = read.csv(str_c("./data_1/", file_names)) %>% 
+     read.csv(str_c("./data_1/", file_names)) %>% 
      janitor::clean_names() %>% 
      as.data.frame() %>% 
      mutate(group = file_names) %>% 
