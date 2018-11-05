@@ -112,9 +112,24 @@ pull_result = function(test_result){
 tidy_result = map(.x = test_result, ~pull_result(.x)) %>% 
   bind_rows() %>% 
   mutate(city_state = summarize_homicides$city_state) %>% 
-  select(city_state, everything())
+  select(city_state, everything()) %>% 
+  mutate(city_state = forcats::fct_reorder(city_state,estimate))
 
 tidy_result
 ```
 
+### Create the plot of estimates and CIs for each city 
+
+```{r}
+tidy_result %>% 
+  ggplot(aes(x = city_state, y = estimate)) + 
+  geom_point() +
+  geom_errorbar(aes(ymin = conf.low, ymax = conf.high)) +
+  theme(axis.text.x = element_text(angle = 90, size = 6)) +
+  labs(
+    title = "Estimates and CIs for each city",
+    x = "City, State",
+    y = "Estimates(CIs)",
+    caption = "Data from the Washington Post")
+```
 
