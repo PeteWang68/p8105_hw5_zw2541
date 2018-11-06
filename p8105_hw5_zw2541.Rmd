@@ -54,6 +54,8 @@ study_data %>%
   theme(legend.position = "bottom")
 ```
 
+At the beginning of the experiment, the mean of the value of control group is `r mean(filter(study_data, group == "con", week == "1")$data)`, and the mean of the value of experiment group is `r mean(filter(study_data, group == "exp", week == "1")$data)`, which are almost the same. However, the value of the experiment group significantly increased over this 8-weeks study, whereas the control group didn't change a lot (actually decreased a little bit). At the end of this study, the mean value of the control group is `r mean(filter(study_data, group == "con", week == "8")$data)`, and the mean value of the experiment group is `r mean(filter(study_data, group == "exp", week == "8")$data)`.
+
 ## Problem 2
 
 ### Read and clean the data
