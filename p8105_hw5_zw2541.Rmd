@@ -18,19 +18,19 @@ library(tidyverse)
 Create a tidy dataframe containing data from all participants, including the subject ID, arm, and observations over time.
 
 ```{r}
-file_names = list.files(path = "./data_1")
-
-
+files = as.data.frame(list.files(path = "./data_1")) 
+colnames(files)[1] = "file_names"
+  
 read_and_tidy = function(file_names){
-     read.csv(str_c("./data_1/", file_names)) %>% 
-     janitor::clean_names() %>% 
-     as.data.frame() %>% 
-     mutate(group = file_names) %>% 
-     select(group, everything())
+     read.csv(str_c("./data_1/", file_names)) 
 }
 
-study_data = map(file_names, read_and_tidy) %>% 
-  bind_rows() %>% 
+study_data =
+  files %>% 
+  mutate(map(files$file_names, read_and_tidy)) %>% 
+  unnest() %>% 
+  janitor::clean_names() %>% 
+  rename(group = file_names) %>% 
   gather(key = week, value = data, week_1:week_8) %>% 
   mutate(group = str_replace(group, ".csv", "")) %>% 
   separate(group, into = c("group", "id"), sep = "_") %>% 
